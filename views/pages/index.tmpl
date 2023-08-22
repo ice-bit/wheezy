@@ -1,0 +1,65 @@
+{{template "header"}}
+{{template "navbar"}}
+<body class="text-justify">
+        <main role="main" class="cfForm w-100 m-auto">
+            <form method="POST" action="/">
+                <h1 id="cfTitle" class="mt-5 text-center">Calcolo Codice Fiscale</h1>
+                    {{if .ErrorMessages}}
+                        <div style="text-align: left;">
+                            {{range .ErrorMessages}}
+                                <p class="lead"><b>Errore</b>: {{.}}</p>
+                            {{end}}
+                        </div>
+                    {{end}}
+
+                <div class="row g-3">
+                    <div class="col form-floating">
+                        <input type="text" name="cognome" class="form-control" id="cognomeInput" placeholder="Inserisci il tuo cognome" required>
+                        <label for="cognomeInput" class="text-center">Cognome</label>
+                    </div>
+                    <div class="col form-floating">
+                        <input type="text" name="nome" class="form-control" id="nomeInput" placeholder="Inserisci il tuo nome" required>
+                        <label for="nomeInput" class="text-center">Nome</label>
+                    </div>
+                    <div class="smlDiv col form-floating">
+                        <select name="sesso" class="form-select" id="sexSelect" aria-label="Sesso" required>
+                        <option selected value="maschile">M</option>
+                        <option value="femminile">F</option>
+                        </select>
+                        <label for="sexSelect">Sesso</label>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col form-floating">
+                        <input type="text" name="luogoNascita" class="form-control" id="luogoNascitaInput" placeholder="Inserisci il tuo luogo di nascita" required>
+                        <label for="luogoNascitaInput" class="text-center">Luogo di nascita</label>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col form-floating">
+                        <select name="giornoNascita" class="form-select" id="giornoNascitaInput" aria-label="Giorno di nascita" required>
+                            <option selected>1</option>
+                        </select>
+                        <label for="giornoNascitaInput" class="text-center">Giorno di nascita</label>
+                    </div>
+
+                    <div class="col form-floating">
+                        <select name="meseNascita" class="form-select" id="meseNascitaInput" aria-label="Mese di nascita" required>
+                            <option value="1" label="Gennaio" selected>Gennaio</option>
+                        </select>
+                        <label for="meseNascitaInput" class="text-center">Mese di nascita</label>
+                    </div>
+
+                    <div class="smlDiv col form-floating">
+                        <select name="annoNascita" class="form-select" id="annoNascitaInput" aria-label="Anno di nascita" required>
+                            <option selected>1900</option>
+                        </select>
+                        <label for="annoNascitaInput" class="text-center">Anno</label>
+                    </div>
+                </div>
+                <button class="w-100 btn btn-lg btn-dark" type="submit">Calcola</button>
+            </form>
+        </main>
+        {{template "footer"}}
+    </body>
+</html>

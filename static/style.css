@@ -1,0 +1,76 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+main > .container {
+    padding: 60px 15px 0;
+}
+
+.smlDiv {
+    max-width: 110px;
+}
+
+.cfForm {
+    max-width: 570px;
+    padding: 15px;
+}
+
+.cfForm .form-floating:focus-within {
+    z-index: 2;
+}
+
+.row {
+    padding-bottom: 20px;
+}
+
+#cfTitle {
+    padding-bottom: 30px;
+}
+
+.card { 
+    border: 0px;
+}
+
+.cfutente {
+    font-size: 17px;
+}
+
+#disclaimer {
+    margin-top: 20px;
+    border: 1px solid #efbf45;
+}
+
+#codFiscale {
+    font-size: 15px;
+}
+
+#codFiscale #res {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    line-height: 60px;
+    text-align: center;
+    background-color: #212529;
+    color: white;
+}
+
+.footer #copy_year {
+    display: inline-block;
+}
