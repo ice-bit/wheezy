@@ -52,19 +52,16 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 				Nome:         req.FormValue("nome"),
 				Sesso:        req.FormValue("sesso"),
 				LuogoNascita: req.FormValue("luogoNascita"),
-				GiornoNascita: func() uint8 {
+				GiornoNascita: func() int {
 					v, _ := strconv.Atoi(req.FormValue("giornoNascita"))
-					return uint8(v)
+					return v
 				}(),
-				MeseNascita: func() uint8 {
+				MeseNascita: func() int {
 					v, _ := strconv.Atoi(req.FormValue("meseNascita"))
-					return uint8(v)
+					return v
 				}(),
-				AnnoNascita: func() uint64 {
-					v, _ := strconv.Atoi(req.FormValue("annoNascita"))
-					return uint64(v)
-				}(),
-				CodFiscale: "",
+				AnnoNascita: req.FormValue("annoNascita"),
+				CodFiscale:  "",
 				Errore: model.Error{
 					Codice:  0,
 					Message: "",

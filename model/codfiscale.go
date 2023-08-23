@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -15,9 +16,9 @@ type Utente struct {
 	Nome          string
 	Sesso         string
 	LuogoNascita  string
-	GiornoNascita uint8
-	MeseNascita   uint8
-	AnnoNascita   uint64
+	GiornoNascita int
+	MeseNascita   int
+	AnnoNascita   string
 	CodFiscale    string
 	Errore        Error
 }
@@ -128,10 +129,66 @@ func (utente *Utente) estraiNome() *Utente {
 	return utente
 }
 
+func (utente *Utente) estraiAnnoNascita() *Utente {
+	utente.CodFiscale += utente.AnnoNascita[len(utente.AnnoNascita)-2:]
+
+	return utente
+}
+
+func (utente *Utente) estraiMeseNascita() *Utente {
+	// Mappa ciascun mese al corrispondente valore
+	mappaMesi := map[int]byte{
+		1:  'A', // Gennaio
+		2:  'B', // Febbraio
+		3:  'C', // Marzo
+		4:  'D', // Aprile
+		5:  'E', // Maggio
+		6:  'H', // Giugno
+		7:  'L', // Luglio
+		8:  'M', // Agosto
+		9:  'P', // Settembre
+		10: 'R', // Ottobre
+		11: 'S', // Novembre
+		12: 'T', // Dicembre
+	}
+
+	// Ritorna il valore corrispondente al mese scelto
+	utente.CodFiscale += string(mappaMesi[utente.MeseNascita])
+
+	return utente
+}
+
+func (utente *Utente) estraiGiornoNascita() *Utente {
+	giornoNascita := utente.GiornoNascita
+
+	// Se il soggetto e' una donna, sommare 40 al giorno di nascita
+	if utente.Sesso == "femminile" {
+		giornoNascita += 40
+		utente.CodFiscale += strconv.Itoa(giornoNascita)
+
+		return utente
+	}
+
+	// Se il risultato finale <= 9, anteporre uno '0' al risultato
+	if giornoNascita < 10 {
+		utente.CodFiscale += "0"
+	}
+
+	utente.CodFiscale += strconv.Itoa(giornoNascita)
+
+	return utente
+}
+
 func EstraiCodFiscale(utente Utente) (string, error) {
-	result := utente.estraiCognome().estraiNome().CodFiscale
+	codFiscale := utente.
+		estraiCognome().
+		estraiNome().
+		estraiAnnoNascita().
+		estraiMeseNascita().
+		estraiGiornoNascita().
+		CodFiscale
 
-	fmt.Println(result)
+	fmt.Println(codFiscale)
 
-	return result, nil
+	return codFiscale, nil
 }
