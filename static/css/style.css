@@ -24,9 +24,9 @@ main > .container {
     padding: 15px;
 }
 
-/* .cfForm .form-floating:focus-within {
+.cfForm .form-floating:focus-within {
     z-index: 2;
-} */
+}
 
 .row {
     padding-bottom: 20px;

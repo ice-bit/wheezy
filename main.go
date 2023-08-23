@@ -4,7 +4,7 @@ import (
 	"flag"
 	"net/http"
 
-	"github.com/ice-bit/wheezy/routes"
+	"github.com/ice-bit/wheezy/controller"
 )
 
 func main() {
@@ -18,8 +18,8 @@ func main() {
 
 	// Definisci le rotte
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/", routes.RootHandler)
-	http.HandleFunc("/about", routes.AboutHandler)
+	http.HandleFunc("/", controller.RootHandler)
+	http.HandleFunc("/about", controller.AboutHandler)
 
 	// Avvia il server
 	http.ListenAndServe(host+":"+port, nil)
