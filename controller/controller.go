@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/ice-bit/wheezy/types"
+	"github.com/ice-bit/wheezy/model"
 )
 
 func RootHandler(res http.ResponseWriter, req *http.Request) {
@@ -47,7 +47,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 			}
 
 			// Estrai il form dalla request
-			utente := types.Utente{
+			utente := model.Utente{
 				Cognome:      req.FormValue("cognome"),
 				Nome:         req.FormValue("nome"),
 				Sesso:        req.FormValue("sesso"),
@@ -65,13 +65,19 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 					return uint64(v)
 				}(),
 				CodFiscale: "",
+				Errore: model.Error{
+					Codice:  0,
+					Message: "",
+				},
 			}
 
+			// Normalizza campi
 			utente.Nome = normalizeField(utente.Nome)
 			utente.Cognome = normalizeField(utente.Cognome)
 			utente.LuogoNascita = normalizeBirthPlace(utente.LuogoNascita)
 
-			fmt.Println(utente)
+			// Estrai il codice fiscale
+			model.EstraiCodFiscale(utente)
 
 		}
 	default:
