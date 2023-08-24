@@ -24,7 +24,11 @@ func EstraiCodiceCatastale(comune string) string {
 	var code string
 	err = stmt.QueryRow(strings.ToUpper(comune)).Scan(&code)
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			return ""
+		} else {
+			panic(err)
+		}
 	}
 
 	return code
@@ -47,7 +51,11 @@ func EstraiComune(codCatastale string) string {
 	var city string
 	err = stmt.QueryRow(strings.ToUpper(codCatastale)).Scan(&city)
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			return ""
+		} else {
+			panic(err)
+		}
 	}
 
 	return city
@@ -70,7 +78,11 @@ func EstraiCodiceNazione(nazione string) string {
 	var code string
 	err = stmt.QueryRow(strings.ToUpper(nazione)).Scan(&code)
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			return ""
+		} else {
+			panic(err)
+		}
 	}
 
 	return code
@@ -93,7 +105,11 @@ func EstraiNazione(codNazione string) string {
 	var state string
 	err = stmt.QueryRow(strings.ToUpper(codNazione)).Scan(&state)
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			return ""
+		} else {
+			panic(err)
+		}
 	}
 
 	return state

@@ -1,9 +1,13 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 type Error struct {
@@ -179,16 +183,76 @@ func (utente *Utente) estraiGiornoNascita() *Utente {
 	return utente
 }
 
-func EstraiCodFiscale(utente Utente) (string, error) {
-	codFiscale := utente.
+func (utente *Utente) estraiLuogoNascita() *Utente {
+	ctx := context.Background()
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	// Cerca il codice del luogo di nascita nella cache
+	codLuogoNascita, err := redisClient.Get(ctx, strings.ToUpper(utente.LuogoNascita)).Result()
+	// Se non viene trovato, estrailo dal database
+	if err != nil {
+		if err == redis.Nil {
+			codCatastale := EstraiCodiceCatastale(utente.LuogoNascita)
+
+			// Se il codice catastale e' stato trovato, salvalo nella cache
+			if codCatastale != "" {
+				err := redisClient.Set(
+					ctx,
+					strings.ToUpper(utente.LuogoNascita),
+					codCatastale,
+					24*time.Hour).Err() // Invalida la chiave dopo 24 ore
+
+				if err != nil {
+					panic(err)
+				}
+
+				// Aggiorna il codice fiscale
+				utente.CodFiscale += codCatastale
+			} else {
+				// Se invece il codice catastale non e' stato trovato, prova a
+				// cercare il codice della nazione
+				codNazione := EstraiCodiceNazione(utente.LuogoNascita)
+
+				// Se il codice della nazione esiste, aggiorna il codice fiscale
+				if codNazione != "" {
+					utente.CodFiscale += codNazione
+				} else {
+					// Altrimenti, se non e' stato trovato nemmeno il codice
+					// della nazione, ritorna un errore
+					utente.Errore = Error{
+						Codice:  400,
+						Message: "Il luogo di nascita selezionato non esiste",
+					}
+				}
+			}
+		} else {
+			panic(err)
+		}
+	} else { // Se il codice esiste nella cache, aggiorna il CF
+		utente.CodFiscale += codLuogoNascita
+	}
+
+	return utente
+}
+
+func EstraiCodFiscale(utente Utente) (string, Error) {
+	result := utente.
 		estraiCognome().
 		estraiNome().
 		estraiAnnoNascita().
 		estraiMeseNascita().
 		estraiGiornoNascita().
-		CodFiscale
+		estraiLuogoNascita()
 
-	fmt.Println(codFiscale)
+	fmt.Println(result.CodFiscale)
 
-	return codFiscale, nil
+	if result.Errore.Message != "" {
+		return "", result.Errore
+	}
+
+	return result.CodFiscale, Error{}
 }
