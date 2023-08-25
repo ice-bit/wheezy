@@ -52,13 +52,13 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 				Nome:         req.FormValue("nome"),
 				Sesso:        req.FormValue("sesso"),
 				LuogoNascita: req.FormValue("luogoNascita"),
-				GiornoNascita: func() int {
-					v, _ := strconv.Atoi(req.FormValue("giornoNascita"))
-					return v
+				GiornoNascita: func() uint {
+					v, _ := strconv.ParseUint(req.FormValue("giornoNascita"), 10, 64)
+					return uint(v)
 				}(),
-				MeseNascita: func() int {
-					v, _ := strconv.Atoi(req.FormValue("meseNascita"))
-					return v
+				MeseNascita: func() uint {
+					v, _ := strconv.ParseUint(req.FormValue("meseNascita"), 10, 64)
+					return uint(v)
 				}(),
 				AnnoNascita: req.FormValue("annoNascita"),
 				CodFiscale:  "",

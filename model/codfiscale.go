@@ -20,8 +20,8 @@ type Utente struct {
 	Nome          string
 	Sesso         string
 	LuogoNascita  string
-	GiornoNascita int
-	MeseNascita   int
+	GiornoNascita uint
+	MeseNascita   uint
 	AnnoNascita   string
 	CodFiscale    string
 	Errore        Error
@@ -141,7 +141,7 @@ func (utente *Utente) estraiAnnoNascita() *Utente {
 
 func (utente *Utente) estraiMeseNascita() *Utente {
 	// Mappa ciascun mese al corrispondente valore
-	mappaMesi := map[int]byte{
+	mappaMesi := map[uint]byte{
 		1:  'A', // Gennaio
 		2:  'B', // Febbraio
 		3:  'C', // Marzo
@@ -168,7 +168,7 @@ func (utente *Utente) estraiGiornoNascita() *Utente {
 	// Se il soggetto e' una donna, sommare 40 al giorno di nascita
 	if utente.Sesso == "femminile" {
 		giornoNascita += 40
-		utente.CodFiscale += strconv.Itoa(giornoNascita)
+		utente.CodFiscale += strconv.FormatUint(uint64(giornoNascita), 10)
 
 		return utente
 	}
@@ -178,7 +178,7 @@ func (utente *Utente) estraiGiornoNascita() *Utente {
 		utente.CodFiscale += "0"
 	}
 
-	utente.CodFiscale += strconv.Itoa(giornoNascita)
+	utente.CodFiscale += strconv.FormatUint(uint64(giornoNascita), 10)
 
 	return utente
 }
@@ -239,6 +239,74 @@ func (utente *Utente) estraiLuogoNascita() *Utente {
 	return utente
 }
 
+func (utente *Utente) estraiCodiceControllo() *Utente {
+	utente.CodFiscale = strings.ToUpper(utente.CodFiscale)
+	// Separa i caratteri in posizione dispari da quelli in posizione pari
+	caratteriDispari := estraiCaratteriDispari(utente.CodFiscale)
+	caratteriPari := estraiCaratteriPari(utente.CodFiscale)
+
+	// Mappa dei valori dispari
+	mappaDispari := map[string]uint{
+		"0": 1, "1": 0, "2": 5, "3": 7, "4": 9, "5": 13,
+		"6": 15, "7": 17, "8": 19, "9": 21, "A": 1, "B": 0,
+		"C": 5, "D": 7, "E": 9, "F": 13, "G": 15, "H": 17,
+		"I": 19, "J": 21, "K": 2, "L": 4, "M": 18, "N": 20,
+		"O": 11, "P": 3, "Q": 6, "R": 8, "S": 12, "T": 14,
+		"U": 16, "V": 10, "W": 22, "X": 25, "Y": 24, "Z": 23,
+	}
+
+	// Mappa dei valori pari
+	mappaPari := map[string]uint{
+		"0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5,
+		"6": 6, "7": 7, "8": 8, "9": 9, "A": 0, "B": 1,
+		"C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7,
+		"I": 8, "J": 9, "K": 10, "L": 11, "M": 12, "N": 13,
+		"O": 14, "P": 15, "Q": 16, "R": 17, "S": 18, "T": 19,
+		"U": 20, "V": 21, "W": 22, "X": 23, "Y": 24, "Z": 25,
+	}
+
+	// Mappa del carattere di controllo
+	mappaControllo := map[uint]string{
+		0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F",
+		6: "G", 7: "H", 8: "I", 9: "J", 10: "K", 11: "L",
+		12: "M", 13: "N", 14: "O", 15: "P", 16: "Q", 17: "R",
+		18: "S", 19: "T", 20: "U", 21: "V", 22: "W", 23: "X",
+		24: "Y", 25: "Z",
+	}
+
+	var (
+		sommaDispari    uint
+		sommaPari       uint
+		valoreControllo uint
+	)
+
+	// Somma i valori dispari associati a ciascun carattere
+	for idx, val := range caratteriDispari {
+		if idx == 0 {
+			sommaDispari = mappaDispari[val]
+		} else {
+			sommaDispari += mappaDispari[val]
+		}
+	}
+
+	// Somma i valori pari associati a ciascun carattere
+	for idx, val := range caratteriPari {
+		if idx == 0 {
+			sommaPari = mappaPari[val]
+		} else {
+			sommaPari += mappaPari[val]
+		}
+	}
+
+	// Somma i due risultati parziali ed esegui la divisone modulo 26
+	valoreControllo = ((sommaPari + sommaDispari) % 26)
+
+	// Mappa il valore di controllo al relativo carattere
+	utente.CodFiscale += mappaControllo[valoreControllo]
+
+	return utente
+}
+
 func EstraiCodFiscale(utente Utente) (string, Error) {
 	result := utente.
 		estraiCognome().
@@ -246,7 +314,8 @@ func EstraiCodFiscale(utente Utente) (string, Error) {
 		estraiAnnoNascita().
 		estraiMeseNascita().
 		estraiGiornoNascita().
-		estraiLuogoNascita()
+		estraiLuogoNascita().
+		estraiCodiceControllo()
 
 	fmt.Println(result.CodFiscale)
 
