@@ -2,18 +2,12 @@ package model
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 )
-
-type Error struct {
-	Codice  uint16
-	Message string
-}
 
 type Utente struct {
 	Cognome       string
@@ -24,7 +18,7 @@ type Utente struct {
 	MeseNascita   uint
 	AnnoNascita   string
 	CodFiscale    string
-	Errore        Error
+	Errore        string
 }
 
 func estraiConsonanti(s string) string {
@@ -81,14 +75,21 @@ func estraiCaratteriDispari(s string) []string {
 
 func (utente *Utente) estraiCognome() *Utente {
 	// Estrai le prime tre consonanti dal cognome
+	var codCognome string
 	consonantiCognome := estraiConsonanti(utente.Cognome)
-	codCognome := consonantiCognome[:3]
+	if len(consonantiCognome) >= 3 {
+		codCognome = consonantiCognome[:3]
+	} else {
+		codCognome = consonantiCognome
+	}
 
 	// Se le consonanti sono minori di tre, estrai pure le vocali
 	if len(consonantiCognome) < 3 {
 		vocaliCognome := estraiVocali(utente.Cognome)
 		codCognome += vocaliCognome
-		codCognome = codCognome[:3]
+		if len(codCognome) >= 3 {
+			codCognome = codCognome[:3]
+		}
 	}
 
 	// Se il risultato < 3(i.e. il cognome e' di due caratteri), aggiungi 'x'
@@ -102,11 +103,12 @@ func (utente *Utente) estraiCognome() *Utente {
 }
 
 func (utente *Utente) estraiNome() *Utente {
+	var codNome string
 	// Estrai le consonanti dal nome
 	consonantiNome := estraiConsonanti(utente.Nome)
 	// Se le consonanti sono >= 4, estrai la prima, la terza e la quarta
 	if len(consonantiNome) >= 4 {
-		codNome := string(consonantiNome[0])
+		codNome = string(consonantiNome[0])
 		codNome += string(consonantiNome[2])
 		codNome += string(consonantiNome[3])
 		utente.CodFiscale += codNome
@@ -114,8 +116,13 @@ func (utente *Utente) estraiNome() *Utente {
 		return utente
 	}
 
-	// Altrimenti prende le prime tre consonanti in ordine
-	codNome := consonantiNome[:3]
+	// Altrimenti prendi le prime tre consonanti in ordine
+	if len(consonantiNome) >= 3 {
+		codNome = consonantiNome[:3]
+	} else {
+		codNome = consonantiNome
+	}
+
 	// Se le consonanti sono minori di tre, estrai pure le vocali
 	if len(consonantiNome) < 3 {
 		vocaliNome := estraiVocali(utente.Nome)
@@ -223,10 +230,7 @@ func (utente *Utente) estraiLuogoNascita() *Utente {
 				} else {
 					// Altrimenti, se non e' stato trovato nemmeno il codice
 					// della nazione, ritorna un errore
-					utente.Errore = Error{
-						Codice:  400,
-						Message: "Il luogo di nascita selezionato non esiste",
-					}
+					utente.Errore = "Il luogo di nascita selezionato non esiste"
 				}
 			}
 		} else {
@@ -307,7 +311,7 @@ func (utente *Utente) estraiCodiceControllo() *Utente {
 	return utente
 }
 
-func EstraiCodFiscale(utente Utente) (string, Error) {
+func EstraiCodFiscale(utente Utente) (Utente, string) {
 	result := utente.
 		estraiCognome().
 		estraiNome().
@@ -317,11 +321,13 @@ func EstraiCodFiscale(utente Utente) (string, Error) {
 		estraiLuogoNascita().
 		estraiCodiceControllo()
 
-	fmt.Println(result.CodFiscale)
-
-	if result.Errore.Message != "" {
-		return "", result.Errore
+	if utente.Errore != "" {
+		// Se ci sono errori, resetta il codice fiscale
+		// in modo tale che l'engine non renderizzi il template
+		// del risultato
+		utente.CodFiscale = ""
+		return utente, utente.Errore
 	}
 
-	return result.CodFiscale, Error{}
+	return *result, ""
 }

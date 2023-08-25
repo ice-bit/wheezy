@@ -32,7 +32,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 			// Valida i campi del form
 			errors := formValidator(req)
 
-			if errors != nil {
+			if len(errors) > 0 {
 				t, _ := template.ParseFiles(
 					"views/pages/index.tmpl",
 					"views/partials/header.tmpl",
@@ -40,42 +40,75 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 					"views/partials/footer.tmpl")
 
 				t.Execute(res, struct {
-					ErrorMessages []string
+					Utente  model.Utente
+					Errori  []string
+					Reverse bool
 				}{
-					ErrorMessages: errors,
+					Utente:  model.Utente{},
+					Errori:  errors,
+					Reverse: false,
 				})
+			} else {
+				// Estrai il form dalla request
+				utente := model.Utente{
+					Cognome:      req.FormValue("cognome"),
+					Nome:         req.FormValue("nome"),
+					Sesso:        req.FormValue("sesso"),
+					LuogoNascita: req.FormValue("luogoNascita"),
+					GiornoNascita: func() uint {
+						v, _ := strconv.ParseUint(req.FormValue("giornoNascita"), 10, 64)
+						return uint(v)
+					}(),
+					MeseNascita: func() uint {
+						v, _ := strconv.ParseUint(req.FormValue("meseNascita"), 10, 64)
+						return uint(v)
+					}(),
+					AnnoNascita: req.FormValue("annoNascita"),
+					CodFiscale:  "",
+					Errore:      "",
+				}
+
+				// Normalizza campi
+				utente.Nome = normalizeField(utente.Nome)
+				utente.Cognome = normalizeField(utente.Cognome)
+				utente.LuogoNascita = normalizeBirthPlace(utente.LuogoNascita)
+
+				// Estrai il codice fiscale
+				utente, err := model.EstraiCodFiscale(utente)
+				if err != "" {
+					t, _ := template.ParseFiles(
+						"views/pages/index.tmpl",
+						"views/partials/header.tmpl",
+						"views/partials/navbar.tmpl",
+						"views/partials/footer.tmpl")
+
+					t.Execute(res, struct {
+						Utente  model.Utente
+						Errori  []string
+						Reverse bool
+					}{
+						Utente:  model.Utente{},
+						Errori:  []string{err},
+						Reverse: false,
+					})
+				} else {
+					t, _ := template.ParseFiles(
+						"views/pages/index.tmpl",
+						"views/partials/header.tmpl",
+						"views/partials/navbar.tmpl",
+						"views/partials/footer.tmpl")
+
+					t.Execute(res, struct {
+						Utente  model.Utente
+						Errori  []string
+						Reverse bool
+					}{
+						Utente:  utente,
+						Errori:  nil,
+						Reverse: false,
+					})
+				}
 			}
-
-			// Estrai il form dalla request
-			utente := model.Utente{
-				Cognome:      req.FormValue("cognome"),
-				Nome:         req.FormValue("nome"),
-				Sesso:        req.FormValue("sesso"),
-				LuogoNascita: req.FormValue("luogoNascita"),
-				GiornoNascita: func() uint {
-					v, _ := strconv.ParseUint(req.FormValue("giornoNascita"), 10, 64)
-					return uint(v)
-				}(),
-				MeseNascita: func() uint {
-					v, _ := strconv.ParseUint(req.FormValue("meseNascita"), 10, 64)
-					return uint(v)
-				}(),
-				AnnoNascita: req.FormValue("annoNascita"),
-				CodFiscale:  "",
-				Errore: model.Error{
-					Codice:  0,
-					Message: "",
-				},
-			}
-
-			// Normalizza campi
-			utente.Nome = normalizeField(utente.Nome)
-			utente.Cognome = normalizeField(utente.Cognome)
-			utente.LuogoNascita = normalizeBirthPlace(utente.LuogoNascita)
-
-			// Estrai il codice fiscale
-			model.EstraiCodFiscale(utente)
-
 		}
 	default:
 		http.Error(res, fmt.Sprintf("Cannot %s %s", req.Method, req.URL.Path), http.StatusMethodNotAllowed)
@@ -128,7 +161,7 @@ func formValidator(req *http.Request) []string {
 
 	for fieldName, fieldValue := range fieldsToCheck {
 		if fieldValue == "" {
-			emptyFields = append(emptyFields, fieldName)
+			emptyFields = append(emptyFields, "Inserire il "+fieldName)
 		}
 	}
 
