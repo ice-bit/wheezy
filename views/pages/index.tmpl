@@ -1,14 +1,14 @@
 {{if .Utente.CodFiscale}}
     {{template "header"}}
-    {{template "navbar"}}
-    <body class="d-flex flex-column h-100 text-justify">
+    <body class="text-justify">
+        {{template "navbar"}}
         <main role="main" class="cfForm w-100 m-auto">
             <div id="codFiscale" class="alert alert-primary" role="alert">
                 <div id="res" ondblclick="copy();">
                     {{.Utente.CodFiscale}}
                 </div>
             </div>
-            <div class="mx-auto card" style="padding-top: 30px;">
+            <div class="mx-auto card">
                 <div class="card-body">
                 <p class="cfutente card-subtitle text-muted">Cognome: <b>{{.Utente.Cognome}}</b></p>
                 <p class="cfutente card-subtitle text-muted">Nome: <b>{{.Utente.Nome}}</b></p>
@@ -41,61 +41,66 @@
 </html>
 {{else}}
     {{template "header"}}
-    {{template "navbar"}}
-    <body class="d-flex flex-column h-100 text-justify">
+    <body class="text-justify">
+        {{template "navbar"}}
+        <main role="main" class="cfForm w-100 m-auto">
             <form method="POST" action="/">
                 <h1 id="cfTitle" class="mt-5 text-center">Calcolo Codice Fiscale</h1>
-                    {{if .Errori}}
-                        <div style="text-align: left;">
-                            {{range .Errori}}
-                                <p class="lead"><b>Errore</b>: {{.}}</p>
-                            {{end}}
-                        </div>
-                    {{end}}
-
                 <div class="row g-3">
-                    <div class="col form-floating">
+                    <div class="col-md">
+                      <div class="form-floating">
                         <input type="text" name="cognome" class="form-control" id="cognomeInput" placeholder="Inserisci il tuo cognome" required>
                         <label for="cognomeInput" class="text-center">Cognome</label>
+                      </div>
                     </div>
-                    <div class="col form-floating">
+                    <div class="col-md">
+                      <div class="form-floating">
                         <input type="text" name="nome" class="form-control" id="nomeInput" placeholder="Inserisci il tuo nome" required>
                         <label for="nomeInput" class="text-center">Nome</label>
+                      </div>
                     </div>
-                    <div class="smlDiv col form-floating">
-                        <select name="sesso" class="form-select" id="sexSelect" aria-label="Sesso" required>
-                        <option selected value="maschile">M</option>
-                        <option value="femminile">F</option>
-                        </select>
-                        <label for="sexSelect">Sesso</label>
-                    </div>
-                </div>
-                <div class="row g-3">
-                    <div class="col form-floating">
-                        <input type="text" name="luogoNascita" class="form-control" id="luogoNascitaInput" placeholder="Inserisci il tuo luogo di nascita" required>
-                        <label for="luogoNascitaInput" class="text-center">Luogo di nascita</label>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <select name="sesso" class="form-select" id="sexSelect" aria-label="Sesso" required>
+                            <option selected value="maschile">M</option>
+                            <option value="femminile">F</option>
+                            </select>
+                            <label for="sexSelect">Sesso</label>
+                        </div>
                     </div>
                 </div>
                 <div class="row g-3">
-                    <div class="col form-floating">
-                        <select name="giornoNascita" class="form-select" id="giornoNascitaInput" aria-label="Giorno di nascita" required>
-                            <option selected>1</option>
-                        </select>
-                        <label for="giornoNascitaInput" class="text-center">Giorno di nascita</label>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="text" name="luogoNascita" class="form-control" id="luogoNascitaInput" placeholder="Inserisci il tuo luogo di nascita" required>
+                            <label for="luogoNascitaInput" class="text-center">Luogo di nascita</label>
+                        </div>
                     </div>
-
-                    <div class="col form-floating">
-                        <select name="meseNascita" class="form-select" id="meseNascitaInput" aria-label="Mese di nascita" required>
-                            <option value="1" label="Gennaio" selected>Gennaio</option>
-                        </select>
-                        <label for="meseNascitaInput" class="text-center">Mese di nascita</label>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <select name="giornoNascita" class="form-select" id="giornoNascitaInput" aria-label="Giorno di nascita" required>
+                                <option selected>1</option>
+                            </select>
+                            <label for="giornoNascitaInput" class="text-center">Giorno di nascita</label>
+                        </div>
                     </div>
-
-                    <div class="smlDiv col form-floating">
-                        <select name="annoNascita" class="form-select" id="annoNascitaInput" aria-label="Anno di nascita" required>
-                            <option selected>1900</option>
-                        </select>
-                        <label for="annoNascitaInput" class="text-center">Anno</label>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <select name="meseNascita" class="form-select" id="meseNascitaInput" aria-label="Mese di nascita" required>
+                                <option value="1" label="Gennaio" selected>Gennaio</option>
+                            </select>
+                            <label for="meseNascitaInput" class="text-center">Mese di nascita</label>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <select name="annoNascita" class="form-select" id="annoNascitaInput" aria-label="Anno di nascita" required>
+                                <option selected>1900</option>
+                            </select>
+                            <label for="annoNascitaInput" class="text-center">Anno</label>
+                        </div>
                     </div>
                 </div>
                 <button class="w-100 btn btn-lg btn-dark" type="submit">Calcola</button>

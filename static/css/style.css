@@ -1,3 +1,7 @@
+main > .container {
+    padding: 60px 15px 0;
+}
+
 html {
     position: relative;
     min-height: 100%;
@@ -5,18 +9,23 @@ html {
 
 body {
     margin-bottom: 60px;
-    display: flex;
-    align-items: center;
     padding-top: 40px;
     padding-bottom: 40px;
 }
 
-main > .container {
-    padding: 60px 15px 0;
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    line-height: 60px;
+    text-align: center;
+    background-color: #212529;
+    color: white;
 }
 
-.smlDiv {
-    max-width: 110px;
+.footer #copy_year {
+    display: inline-block;
 }
 
 .cfForm {
@@ -24,16 +33,12 @@ main > .container {
     padding: 15px;
 }
 
-.cfForm .form-floating:focus-within {
-    z-index: 2;
-}
-
-.row {
-    padding-bottom: 20px;
-}
-
 #cfTitle {
     padding-bottom: 30px;
+}
+
+.form-floating {
+    padding-bottom: 20px;
 }
 
 .card { 
@@ -50,27 +55,15 @@ main > .container {
 }
 
 #codFiscale {
+    margin-top: 50px;
     font-size: 15px;
 }
 
 #codFiscale #res {
+    color: #0a58ca;
+    border-color: #0a58ca;
     text-align: center;
     font-size: 25px;
     font-weight: bold;
     letter-spacing: 2px;
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 0;
-    line-height: 60px;
-    text-align: center;
-    background-color: #212529;
-    color: white;
-}
-
-.footer #copy_year {
-    display: inline-block;
 }
