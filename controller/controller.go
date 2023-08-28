@@ -75,7 +75,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 
 				// Estrai il codice fiscale
 				utente, err := model.EstraiCodFiscale(utente)
-				if err != "" {
+				if err != nil {
 					t, _ := template.ParseFiles(
 						"views/pages/index.tmpl",
 						"views/partials/header.tmpl",
@@ -88,7 +88,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 						Reverse bool
 					}{
 						Utente:  model.Utente{},
-						Errori:  []string{err},
+						Errori:  []string{err.Error()},
 						Reverse: false,
 					})
 				} else {
@@ -108,6 +108,77 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 						Reverse: false,
 					})
 				}
+			}
+		}
+	default:
+		http.Error(res, fmt.Sprintf("Cannot %s %s", req.Method, req.URL.Path), http.StatusMethodNotAllowed)
+	}
+}
+
+func ReverseHandler(res http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodGet:
+		{
+			t, _ := template.ParseFiles(
+				"views/pages/reverse.tmpl",
+				"views/partials/header.tmpl",
+				"views/partials/navbar.tmpl",
+				"views/partials/footer.tmpl")
+
+			t.Execute(res, nil)
+		}
+	case http.MethodPost:
+		{
+			// Estrai e valida il campo del codice fiscale
+			codFiscale := req.FormValue("codFiscale")
+			if codFiscale == "" {
+				t, _ := template.ParseFiles(
+					"views/pages/reverse.tmpl",
+					"views/partials/header.tmpl",
+					"views/partials/navbar.tmpl",
+					"views/partials/footer.tmpl")
+
+				t.Execute(res, struct {
+					Reverse model.Inverso
+					Errori  []string
+				}{
+					Reverse: model.Inverso{},
+					Errori:  []string{"Inserire il codice fiscale"},
+				})
+			}
+
+			// Normalizza il campo
+			codFiscale = strings.ToUpper(strings.TrimSpace(codFiscale))
+			// Estrai l'utente
+			utente, err := model.EstraiInverso(codFiscale)
+			if err != nil {
+				t, _ := template.ParseFiles(
+					"views/pages/reverse.tmpl",
+					"views/partials/header.tmpl",
+					"views/partials/navbar.tmpl",
+					"views/partials/footer.tmpl")
+
+				t.Execute(res, struct {
+					Reverse model.Inverso
+					Errori  []string
+				}{
+					Reverse: model.Inverso{},
+					Errori:  []string{err.Error()},
+				})
+			} else {
+				t, _ := template.ParseFiles(
+					"views/pages/reverse.tmpl",
+					"views/partials/header.tmpl",
+					"views/partials/navbar.tmpl",
+					"views/partials/footer.tmpl")
+
+				t.Execute(res, struct {
+					Reverse model.Inverso
+					Errori  []string
+				}{
+					Reverse: utente,
+					Errori:  nil,
+				})
 			}
 		}
 	default:
@@ -161,7 +232,7 @@ func formValidator(req *http.Request) []string {
 
 	for fieldName, fieldValue := range fieldsToCheck {
 		if fieldValue == "" {
-			emptyFields = append(emptyFields, "Inserire il "+fieldName)
+			emptyFields = append(emptyFields, "inserire il "+fieldName)
 		}
 	}
 

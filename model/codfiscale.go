@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -230,7 +231,7 @@ func (utente *Utente) estraiLuogoNascita() *Utente {
 				} else {
 					// Altrimenti, se non e' stato trovato nemmeno il codice
 					// della nazione, ritorna un errore
-					utente.Errore = "Il luogo di nascita selezionato non esiste"
+					utente.Errore = "il luogo di nascita selezionato non esiste"
 				}
 			}
 		} else {
@@ -311,7 +312,7 @@ func (utente *Utente) estraiCodiceControllo() *Utente {
 	return utente
 }
 
-func EstraiCodFiscale(utente Utente) (Utente, string) {
+func EstraiCodFiscale(utente Utente) (Utente, error) {
 	result := utente.
 		estraiCognome().
 		estraiNome().
@@ -326,8 +327,8 @@ func EstraiCodFiscale(utente Utente) (Utente, string) {
 		// in modo tale che l'engine non renderizzi il template
 		// del risultato
 		utente.CodFiscale = ""
-		return utente, utente.Errore
+		return utente, errors.New(utente.Errore)
 	}
 
-	return *result, ""
+	return *result, nil
 }

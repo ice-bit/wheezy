@@ -19,6 +19,7 @@ func main() {
 	// Definisci le rotte
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", controller.RootHandler)
+	http.HandleFunc("/reverse", controller.ReverseHandler)
 	http.HandleFunc("/about", controller.AboutHandler)
 
 	// Avvia il server

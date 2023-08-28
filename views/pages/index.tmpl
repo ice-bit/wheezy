@@ -46,6 +46,13 @@
         <main role="main" class="cfForm w-100 m-auto">
             <form method="POST" action="/">
                 <h1 id="cfTitle" class="mt-5 text-center">Calcolo Codice Fiscale</h1>
+                {{if .Errori}}
+                    <div style="text-align: left;">
+                        {{range .Errori}}
+                            <p class="lead"><b>Errore</b>: {{.}}</p>
+                        {{end}}
+                    </div>
+                {{end}}
                 <div class="row g-3">
                     <div class="col-md">
                       <div class="form-floating">

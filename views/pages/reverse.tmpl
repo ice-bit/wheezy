@@ -1,0 +1,70 @@
+{{if .Reverse.CodFiscale}}
+    {{template "header"}}
+    <body class="text-justify">
+        {{template "navbar"}}
+        <main role="main" class="cfForm w-100 m-auto">
+            <div id="codFiscale" class="alert alert-primary" role="alert">
+                <div id="res" ondblclick="copy();">
+                    {{.Reverse.CodFiscale}}
+                </div>
+            </div>
+            <div class="mx-auto card">
+                <div class="card-body">
+                <p class="cfutente card-subtitle text-muted">Cognome: <b>{{.Reverse.Cognome}}</b></p>
+                <p class="cfutente card-subtitle text-muted">Nome: <b>{{.Reverse.Nome}}</b></p>
+                <p class="cfutente card-subtitle text-muted">Sesso: <b>
+                    {{if eq .Reverse.Sesso "maschile"}}
+                        M
+                    {{else}}
+                        F
+                    {{end}}
+                </b></p>
+                <p class="cfutente card-subtitle text-muted">Luogo Di Nascita: <b>{{.Reverse.LuogoNascita}}</b></p>
+                <p class="cfutente card-subtitle text-muted">Data Di Nascita: <b>{{.Reverse.GiornoNascita}}</b> <b id="mese">{{.Reverse.MeseNascita}}</b> <b>{{.Reverse.AnnoNascita}}</b></p>
+                <p class="cfutente card-subtitle text-muted">Codice Fiscale: <b>{{.Reverse.CodFiscale}}</b></p>
+                </div>
+                {{if .Reverse}}
+                    <button class="w-80 btn btn-lg btn-dark" type="button" onclick="location.href='/reverse';">Inverti un nuovo codice</button>
+                    <div class="alert alert-warning" role="alert" id="disclaimer">
+                        Il <b>nome</b> e il <b>cognome</b> completi non possono essere estratti in modo preciso
+                        a partire dal codice fiscale, le precedenti approssimazione potrebbero dunque non essere accurate.
+                    </div>
+                {{else}}
+                    <button class="w-80 btn btn-lg btn-dark" type="button" onclick="location.href='/';">Calcola un nuovo codice</button>
+                {{end}}
+            </div>
+        </main>
+        {{template "footer"}}
+        <script src="/static/js/copyToClipboard.js"></script>
+        <script src="/static/js/mapMonths.js"></script>
+    </body>
+</html>
+{{else}}
+    {{template "header"}}
+    <body class="text-justify">
+        {{template "navbar"}}
+        <main role="main" class="cfForm w-100 m-auto">
+            <form method="POST" action="/reverse">
+                <h1 id="cfTitle" class="mt-5 text-center">Calcolo Inverso</h1>
+                {{if .Errori}}
+                    <div style="text-align: left;">
+                        {{range .Errori}}
+                            <p class="lead"><b>Errore</b>: {{.}}</p>
+                        {{end}}
+                    </div>
+                {{end}}
+                <div class="row g-3">
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="text" name="codFiscale" class="form-control" id="codFiscInput" placeholder="Inserisci il codice fiscale" required>
+                            <label for="codFiscInput" class="text-center">Codice Fiscale</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-100 btn btn-lg btn-dark" type="submit">Estrai Informazioni</button>
+            </form>
+        </main>
+        {{template "footer"}}
+    </body>
+</html>
+{{end}}
