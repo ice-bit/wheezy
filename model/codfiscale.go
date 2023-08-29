@@ -120,7 +120,7 @@ func (utente *Utente) estraiNome() *Utente {
 	}
 
 	// Altrimenti prendi le prime tre consonanti in ordine
-	if len(consonantiNome) >= 3 {
+	if len(consonantiNome) == 3 {
 		codNome = consonantiNome[:3]
 	} else {
 		codNome = consonantiNome
@@ -130,7 +130,9 @@ func (utente *Utente) estraiNome() *Utente {
 	if len(consonantiNome) < 3 {
 		vocaliNome := estraiVocali(utente.Nome)
 		codNome += vocaliNome
-		codNome = codNome[:3]
+		if len(codNome) >= 3 {
+			codNome = codNome[:3]
+		}
 	}
 
 	// Se il risultato < 3(i.e. il nome e' di due caratteri), aggiungi 'x'
