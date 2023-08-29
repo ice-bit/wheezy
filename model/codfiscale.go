@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"errors"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -192,9 +193,20 @@ func (utente *Utente) estraiGiornoNascita() *Utente {
 }
 
 func (utente *Utente) estraiLuogoNascita() *Utente {
+	// Estrai l'host e la porta di redis dalle
+	// variabili d'ambiente
+	var (
+		host = os.Getenv("WHEEZY_REDIS_ADDRESS")
+		port = os.Getenv("WHEEZY_REDIS_PORT")
+	)
+
+	if host == "" || port == "" {
+		panic("Environment variables not configured")
+	}
+
 	ctx := context.Background()
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     (host + ":" + port),
 		Password: "",
 		DB:       0,
 	})

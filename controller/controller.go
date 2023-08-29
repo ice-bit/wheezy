@@ -40,13 +40,11 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 					"views/partials/footer.tmpl")
 
 				t.Execute(res, struct {
-					Utente  model.Utente
-					Errori  []string
-					Reverse bool
+					Utente model.Utente
+					Errori []string
 				}{
-					Utente:  model.Utente{},
-					Errori:  errors,
-					Reverse: false,
+					Utente: model.Utente{},
+					Errori: errors,
 				})
 			} else {
 				// Estrai il form dalla request
@@ -83,13 +81,11 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 						"views/partials/footer.tmpl")
 
 					t.Execute(res, struct {
-						Utente  model.Utente
-						Errori  []string
-						Reverse bool
+						Utente model.Utente
+						Errori []string
 					}{
-						Utente:  model.Utente{},
-						Errori:  []string{err.Error()},
-						Reverse: false,
+						Utente: model.Utente{},
+						Errori: []string{err.Error()},
 					})
 				} else {
 					t, _ := template.ParseFiles(
@@ -99,13 +95,11 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 						"views/partials/footer.tmpl")
 
 					t.Execute(res, struct {
-						Utente  model.Utente
-						Errori  []string
-						Reverse bool
+						Utente model.Utente
+						Errori []string
 					}{
-						Utente:  utente,
-						Errori:  nil,
-						Reverse: false,
+						Utente: utente,
+						Errori: nil,
 					})
 				}
 			}

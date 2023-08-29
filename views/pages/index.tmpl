@@ -23,15 +23,7 @@
                 <p class="cfutente card-subtitle text-muted">Data Di Nascita: <b>{{.Utente.GiornoNascita}}</b> <b id="mese">{{.Utente.MeseNascita}}</b> <b>{{.Utente.AnnoNascita}}</b></p>
                 <p class="cfutente card-subtitle text-muted">Codice Fiscale: <b>{{.Utente.CodFiscale}}</b></p>
                 </div>
-                {{if .Reverse}}
-                    <button class="w-80 btn btn-lg btn-dark" type="button" onclick="location.href='/reverse';">Inverti un nuovo codice</button>
-                    <div class="alert alert-warning" role="alert" id="disclaimer">
-                        Il <b>nome</b> e il <b>cognome</b> completi non possono essere estratti in modo preciso
-                        a partire dal codice fiscale, le precedenti approssimazione potrebbero dunque non essere accurate.
-                    </div>
-                {{else}}
-                    <button class="w-80 btn btn-lg btn-dark" type="button" onclick="location.href='/';">Calcola un nuovo codice</button>
-                {{end}}
+                <button class="w-80 btn btn-lg btn-dark" type="button" onclick="location.href='/';">Calcola un nuovo codice</button>
             </div>
         </main>
         {{template "footer"}}

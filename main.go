@@ -1,20 +1,24 @@
 package main
 
 import (
-	"flag"
 	"net/http"
+	"os"
 
 	"github.com/ice-bit/wheezy/controller"
 )
 
 func main() {
-	var host string
-	var port string
+	var (
+		host       = os.Getenv("WHEEZY_LISTEN_ADDRESS")
+		port       = os.Getenv("WHEEZY_LISTEN_PORT")
+		redis_host = os.Getenv("WHEEZY_REDIS_ADDRESS")
+		redis_port = os.Getenv("WHEEZY_REDIS_PORT")
+	)
 
-	// Leggi host e porta da CLI
-	flag.StringVar(&host, "l", "127.0.0.1", "Specify listening address.")
-	flag.StringVar(&port, "p", "9000", "Specify listening port.")
-	flag.Parse()
+	// Controlla che le env vars siano definite
+	if host == "" || port == "" || redis_host == "" || redis_port == "" {
+		panic("Environment variables not configured")
+	}
 
 	// Definisci le rotte
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))

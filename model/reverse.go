@@ -32,11 +32,19 @@ func (inverso *Inverso) estraiCognome() *Inverso {
 
 	cognomi := strings.Split(string(fileContent), "\n")
 	risultatoRicerca := fuzzy.RankFindFold(iniziali, cognomi)
+	var numeroMatch uint = 1
 
 	for _, match := range risultatoRicerca {
+
 		// Estrai i risultati con una distanza di Hamming bassa
 		if match.Distance <= 7 {
+			// Interrompi il ciclo dopo 20 match
+			if numeroMatch > 20 {
+				break
+			}
+
 			inverso.Cognome += (match.Target + ", ")
+			numeroMatch++
 		}
 	}
 
@@ -66,11 +74,18 @@ func (inverso *Inverso) estraiNome() *Inverso {
 
 	nomi := strings.Split(string(fileContent), "\n")
 	risultatoRicerca := fuzzy.RankFindFold(iniziali, nomi)
+	var numeroMatch uint = 1
 
 	for _, match := range risultatoRicerca {
 		// Estrai i risultati con una distanza di Hamming bassa
 		if match.Distance <= 10 {
+			// Interrompi il ciclo dopo 20 iterazioni
+			if numeroMatch > 20 {
+				break
+			}
+
 			inverso.Nome += (match.Target + ", ")
+			numeroMatch++
 		}
 	}
 
