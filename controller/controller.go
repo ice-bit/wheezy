@@ -7,6 +7,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/ice-bit/wheezy/log"
 	"github.com/ice-bit/wheezy/model"
 )
 
@@ -19,6 +20,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		{
+			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
 			t, _ := template.ParseFiles(
 				"views/pages/index.tmpl",
 				"views/partials/header.tmpl",
@@ -29,6 +31,8 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 		}
 	case http.MethodPost:
 		{
+			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
+
 			// Valida i campi del form
 			errors := formValidator(req)
 
@@ -113,6 +117,8 @@ func ReverseHandler(res http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		{
+			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
+
 			t, _ := template.ParseFiles(
 				"views/pages/reverse.tmpl",
 				"views/partials/header.tmpl",
@@ -123,6 +129,8 @@ func ReverseHandler(res http.ResponseWriter, req *http.Request) {
 		}
 	case http.MethodPost:
 		{
+			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
+
 			// Estrai e valida il campo del codice fiscale
 			codFiscale := req.FormValue("codFiscale")
 			if codFiscale == "" {
@@ -184,6 +192,8 @@ func AboutHandler(res http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		{
+			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
+
 			t, _ := template.ParseFiles(
 				"views/pages/about.tmpl",
 				"views/partials/header.tmpl",
@@ -198,6 +208,7 @@ func AboutHandler(res http.ResponseWriter, req *http.Request) {
 }
 
 func errorNotFound(res http.ResponseWriter, req *http.Request) {
+	log.WarnLogger.Printf("cannot %s %s", req.Method, req.URL.Path)
 	http.Error(res, fmt.Sprintf("Cannot %s %s", req.Method, req.URL.Path), http.StatusNotFound)
 }
 

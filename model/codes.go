@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"strings"
 
+	"github.com/ice-bit/wheezy/log"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -11,12 +12,14 @@ import (
 func EstraiCodiceCatastale(comune string) string {
 	db, err := sql.Open("sqlite3", "codes.db")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer db.Close()
 
 	stmt, err := db.Prepare("SELECT Code FROM codCatastali WHERE UPPER(City) = ?")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer stmt.Close()
@@ -27,6 +30,7 @@ func EstraiCodiceCatastale(comune string) string {
 		if err == sql.ErrNoRows {
 			return ""
 		} else {
+			log.ErrLogger.Printf(err.Error())
 			panic(err)
 		}
 	}
@@ -38,12 +42,14 @@ func EstraiCodiceCatastale(comune string) string {
 func EstraiComune(codCatastale string) string {
 	db, err := sql.Open("sqlite3", "codes.db")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer db.Close()
 
 	stmt, err := db.Prepare("SELECT City FROM codCatastali WHERE Code = ?")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer stmt.Close()
@@ -54,6 +60,7 @@ func EstraiComune(codCatastale string) string {
 		if err == sql.ErrNoRows {
 			return ""
 		} else {
+			log.ErrLogger.Printf(err.Error())
 			panic(err)
 		}
 	}
@@ -65,12 +72,14 @@ func EstraiComune(codCatastale string) string {
 func EstraiCodiceNazione(nazione string) string {
 	db, err := sql.Open("sqlite3", "codes.db")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer db.Close()
 
 	stmt, err := db.Prepare("SELECT Code FROM codNazioni WHERE UPPER(State) = ?")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer stmt.Close()
@@ -81,6 +90,7 @@ func EstraiCodiceNazione(nazione string) string {
 		if err == sql.ErrNoRows {
 			return ""
 		} else {
+			log.ErrLogger.Printf(err.Error())
 			panic(err)
 		}
 	}
@@ -92,12 +102,14 @@ func EstraiCodiceNazione(nazione string) string {
 func EstraiNazione(codNazione string) string {
 	db, err := sql.Open("sqlite3", "codes.db")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer db.Close()
 
 	stmt, err := db.Prepare("SELECT State FROM codNazioni WHERE Code = ?")
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 	defer stmt.Close()
@@ -108,6 +120,7 @@ func EstraiNazione(codNazione string) string {
 		if err == sql.ErrNoRows {
 			return ""
 		} else {
+			log.ErrLogger.Printf(err.Error())
 			panic(err)
 		}
 	}

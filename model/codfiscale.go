@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ice-bit/wheezy/log"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -201,6 +202,7 @@ func (utente *Utente) estraiLuogoNascita() *Utente {
 	)
 
 	if host == "" || port == "" {
+		log.ErrLogger.Printf("environment variables not configured")
 		panic("Environment variables not configured")
 	}
 
@@ -227,6 +229,7 @@ func (utente *Utente) estraiLuogoNascita() *Utente {
 					24*time.Hour).Err() // Invalida la chiave dopo 24 ore
 
 				if err != nil {
+					log.ErrLogger.Printf(err.Error())
 					panic(err)
 				}
 
@@ -247,6 +250,7 @@ func (utente *Utente) estraiLuogoNascita() *Utente {
 				}
 			}
 		} else {
+			log.ErrLogger.Printf(err.Error())
 			panic(err)
 		}
 	} else { // Se il codice esiste nella cache, aggiorna il CF

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ice-bit/wheezy/log"
 	"github.com/lithammer/fuzzysearch/fuzzy"
 )
 
@@ -27,6 +28,7 @@ func (inverso *Inverso) estraiCognome() *Inverso {
 	fileCognomi := "cognomi.txt"
 	fileContent, err := os.ReadFile(fileCognomi)
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 
@@ -69,6 +71,7 @@ func (inverso *Inverso) estraiNome() *Inverso {
 
 	fileContent, err := os.ReadFile(fileNomi)
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 
@@ -183,6 +186,7 @@ func (inverso *Inverso) estraiLuogoNascita() *Inverso {
 func (inverso *Inverso) estraiSesso() *Inverso {
 	giornoNascita, err := strconv.Atoi(inverso.CodFiscale[9:11])
 	if err != nil {
+		log.ErrLogger.Printf(err.Error())
 		panic(err)
 	}
 

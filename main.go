@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/ice-bit/wheezy/controller"
+	"github.com/ice-bit/wheezy/log"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 
 	// Controlla che le env vars siano definite
 	if host == "" || port == "" || redis_host == "" || redis_port == "" {
+		log.ErrLogger.Printf("environment variables not configured")
 		panic("Environment variables not configured")
 	}
 
@@ -27,5 +29,6 @@ func main() {
 	http.HandleFunc("/about", controller.AboutHandler)
 
 	// Avvia il server
+	log.InfoLogger.Printf("server listening on http://%s", (host + ":" + port))
 	http.ListenAndServe(host+":"+port, nil)
 }
