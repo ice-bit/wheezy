@@ -136,6 +136,35 @@ func (inverso *Inverso) estraiGiornoNascita() *Inverso {
 	return inverso
 }
 
+func (inverso *Inverso) estraiLuogoNascita() *Inverso {
+	codiceLuogoNascita := inverso.CodFiscale[11:15]
+
+	// Se il codice del luogo di nascita inizia con 'Z",
+	// cerca nella tabella dei codici nazionali
+	if codiceLuogoNascita[0] == 'Z' {
+		nazione := EstraiNazione(codiceLuogoNascita)
+
+		if nazione == "" {
+			inverso.Errore = "la nazione del codice fiscale non esiste"
+		} else {
+			inverso.LuogoNascita = strings.ToUpper(nazione[:1]) +
+				strings.ToLower(nazione[1:])
+		}
+	} else {
+		// Altrimenti cerca il codice nella tabella dei comuni italiani
+		comune := EstraiComune(codiceLuogoNascita)
+
+		if comune == "" {
+			inverso.Errore = "il comune del codice fiscale non esiste"
+		} else {
+			inverso.LuogoNascita = strings.ToUpper(comune[:1]) +
+				strings.ToLower(comune[1:])
+		}
+	}
+
+	return inverso
+}
+
 func (inverso *Inverso) estraiSesso() *Inverso {
 	giornoNascita, err := strconv.Atoi(inverso.CodFiscale[9:11])
 	if err != nil {
@@ -165,7 +194,8 @@ func EstraiInverso(codFiscale string) (Inverso, error) {
 		estraiNome().
 		estraiAnnoNascita().
 		estraiMeseNascita().
-		estraiGiornoNascita()
+		estraiGiornoNascita().
+		estraiLuogoNascita()
 
 	if result.Errore != "" {
 		return Inverso{}, errors.New(result.Errore)
