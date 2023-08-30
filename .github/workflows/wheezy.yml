@@ -16,7 +16,7 @@ jobs:
       - name: Build binary
         run: go build
       - name: Run unit tests
-        run: go tests ./... -v
+        run: go test ./... -v
   docker:
     runs-on: ubuntu-latest
     steps:

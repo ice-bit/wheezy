@@ -19,7 +19,7 @@ services:
       - wheezy
     ports:
       - "9000:9000"
-    restarts: always
+    restart: always
     depends_on:
       - wheezy-cache
 
