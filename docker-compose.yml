@@ -1,0 +1,36 @@
+version: "3.9"
+
+networks:
+  wheezy:
+    external: false
+
+services:
+  wheezy-base:
+    container_name: "wheezy_base"
+    build:
+      context: .
+      network: host
+    environment:
+      WHEEZY_LISTEN_ADDRESS: 0.0.0.0
+      WHEEZY_LISTEN_PORT: 9000
+      WHEEZY_REDIS_ADDRESS: wheezy-cache
+      WHEEZY_REDIS_PORT: 6379
+    networks:
+      - wheezy
+    ports:
+      - "9000:9000"
+    restarts: always
+    depends_on:
+      - wheezy-cache
+
+  wheezy-cache:
+    image: redis:latest
+    container_name: "wheezy_cache"
+    restart: always
+    networks:
+      - wheezy
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 3s
+      retries: 30
