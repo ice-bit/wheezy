@@ -1,0 +1,25 @@
+name: wheezy
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          check-latest: true
+      - name: Build binary
+        run: go build
+      - name: Run unit tests
+        run: go tests ./... -v
+  docker:
+    runs-on: ubuntu-latest:
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build docker image
+        run: docker-compose build
