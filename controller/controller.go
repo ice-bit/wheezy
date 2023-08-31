@@ -11,6 +11,47 @@ import (
 	"github.com/ice-bit/wheezy/model"
 )
 
+type utenteTmplType struct {
+	Utente model.Utente
+	Errori []string
+}
+
+type inversoTmplType struct {
+	Reverse model.Inverso
+	Errori  []string
+}
+
+type nilTmplType struct{}
+
+type Entity interface {
+	utenteTmplType | inversoTmplType | nilTmplType
+}
+
+func renderTemplate[T Entity](res http.ResponseWriter, view string, entity T) {
+	switch any(entity).(type) {
+	case nilTmplType:
+		{
+			t, _ := template.ParseFiles(
+				view,
+				"views/partials/header.tmpl",
+				"views/partials/navbar.tmpl",
+				"views/partials/footer.tmpl")
+
+			t.Execute(res, nil)
+		}
+	default:
+		{
+			t, _ := template.ParseFiles(
+				view,
+				"views/partials/header.tmpl",
+				"views/partials/navbar.tmpl",
+				"views/partials/footer.tmpl")
+
+			t.Execute(res, entity)
+		}
+	}
+}
+
 func RootHandler(res http.ResponseWriter, req *http.Request) {
 	if req.URL.Path != "/" {
 		errorNotFound(res, req)
@@ -21,13 +62,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 	case http.MethodGet:
 		{
 			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
-			t, _ := template.ParseFiles(
-				"views/pages/index.tmpl",
-				"views/partials/header.tmpl",
-				"views/partials/navbar.tmpl",
-				"views/partials/footer.tmpl")
-
-			t.Execute(res, nil)
+			renderTemplate[nilTmplType](res, "views/pages/index.tmpl", nilTmplType{})
 		}
 	case http.MethodPost:
 		{
@@ -37,16 +72,7 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 			errors := formValidator(req)
 
 			if len(errors) > 0 {
-				t, _ := template.ParseFiles(
-					"views/pages/index.tmpl",
-					"views/partials/header.tmpl",
-					"views/partials/navbar.tmpl",
-					"views/partials/footer.tmpl")
-
-				t.Execute(res, struct {
-					Utente model.Utente
-					Errori []string
-				}{
+				renderTemplate[utenteTmplType](res, "views/pages/index.tmpl", utenteTmplType{
 					Utente: model.Utente{},
 					Errori: errors,
 				})
@@ -78,33 +104,17 @@ func RootHandler(res http.ResponseWriter, req *http.Request) {
 				// Estrai il codice fiscale
 				utente, err := model.EstraiCodFiscale(utente)
 				if err != nil {
-					t, _ := template.ParseFiles(
-						"views/pages/index.tmpl",
-						"views/partials/header.tmpl",
-						"views/partials/navbar.tmpl",
-						"views/partials/footer.tmpl")
-
-					t.Execute(res, struct {
-						Utente model.Utente
-						Errori []string
-					}{
+					renderTemplate[utenteTmplType](res, "views/pages/index.tmpl", utenteTmplType{
 						Utente: model.Utente{},
 						Errori: []string{err.Error()},
 					})
 				} else {
-					t, _ := template.ParseFiles(
-						"views/pages/index.tmpl",
-						"views/partials/header.tmpl",
-						"views/partials/navbar.tmpl",
-						"views/partials/footer.tmpl")
-
-					t.Execute(res, struct {
-						Utente model.Utente
-						Errori []string
-					}{
-						Utente: utente,
-						Errori: nil,
-					})
+					renderTemplate[utenteTmplType](
+						res,
+						"views/pages/index.tmpl", utenteTmplType{
+							Utente: utente,
+							Errori: nil,
+						})
 				}
 			}
 		}
@@ -118,14 +128,7 @@ func ReverseHandler(res http.ResponseWriter, req *http.Request) {
 	case http.MethodGet:
 		{
 			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
-
-			t, _ := template.ParseFiles(
-				"views/pages/reverse.tmpl",
-				"views/partials/header.tmpl",
-				"views/partials/navbar.tmpl",
-				"views/partials/footer.tmpl")
-
-			t.Execute(res, nil)
+			renderTemplate[nilTmplType](res, "views/pages/reverse.tmpl", nilTmplType{})
 		}
 	case http.MethodPost:
 		{
@@ -134,18 +137,9 @@ func ReverseHandler(res http.ResponseWriter, req *http.Request) {
 			// Estrai e valida il campo del codice fiscale
 			codFiscale := req.FormValue("codFiscale")
 			if codFiscale == "" {
-				t, _ := template.ParseFiles(
-					"views/pages/reverse.tmpl",
-					"views/partials/header.tmpl",
-					"views/partials/navbar.tmpl",
-					"views/partials/footer.tmpl")
-
-				t.Execute(res, struct {
-					Reverse model.Inverso
-					Errori  []string
-				}{
-					Reverse: model.Inverso{},
-					Errori:  []string{"Inserire il codice fiscale"},
+				renderTemplate[inversoTmplType](res, "views/pages/reverse.tmpl", inversoTmplType{
+					model.Inverso{},
+					[]string{"inserire il codice fiscale"},
 				})
 			}
 
@@ -154,32 +148,14 @@ func ReverseHandler(res http.ResponseWriter, req *http.Request) {
 			// Estrai l'utente
 			utente, err := model.EstraiInverso(codFiscale)
 			if err != nil {
-				t, _ := template.ParseFiles(
-					"views/pages/reverse.tmpl",
-					"views/partials/header.tmpl",
-					"views/partials/navbar.tmpl",
-					"views/partials/footer.tmpl")
-
-				t.Execute(res, struct {
-					Reverse model.Inverso
-					Errori  []string
-				}{
-					Reverse: model.Inverso{},
-					Errori:  []string{err.Error()},
+				renderTemplate[inversoTmplType](res, "views/pages/reverse.tmpl", inversoTmplType{
+					model.Inverso{},
+					[]string{err.Error()},
 				})
 			} else {
-				t, _ := template.ParseFiles(
-					"views/pages/reverse.tmpl",
-					"views/partials/header.tmpl",
-					"views/partials/navbar.tmpl",
-					"views/partials/footer.tmpl")
-
-				t.Execute(res, struct {
-					Reverse model.Inverso
-					Errori  []string
-				}{
-					Reverse: utente,
-					Errori:  nil,
+				renderTemplate[inversoTmplType](res, "views/pages/reverse.tmpl", inversoTmplType{
+					utente,
+					nil,
 				})
 			}
 		}
@@ -193,14 +169,7 @@ func AboutHandler(res http.ResponseWriter, req *http.Request) {
 	case http.MethodGet:
 		{
 			log.InfoLogger.Printf("incoming %s request at %s", req.Method, req.URL.Path)
-
-			t, _ := template.ParseFiles(
-				"views/pages/about.tmpl",
-				"views/partials/header.tmpl",
-				"views/partials/navbar.tmpl",
-				"views/partials/footer.tmpl")
-
-			t.Execute(res, nil)
+			renderTemplate[nilTmplType](res, "views/pages/about.tmpl", nilTmplType{})
 		}
 	default:
 		http.Error(res, fmt.Sprintf("Cannot %s %s", req.Method, req.URL.Path), http.StatusMethodNotAllowed)
