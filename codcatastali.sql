@@ -1,5 +1,5 @@
 /* Schema tabella generato automaticamente 
- * 2023-08-30:15:16:42.209061
+ * 2023-12-06:16:06:29.191794
  * Non modificare */
 CREATE TABLE codCatastali (
     City VARCHAR(64) NOT NULL,
@@ -114,7 +114,6 @@ INSERT INTO codCatastali(City,Code) VALUES ("ALBANO DI LUCANIA","A131");
 INSERT INTO codCatastali(City,Code) VALUES ("ALBANO LAZIALE","A132");
 INSERT INTO codCatastali(City,Code) VALUES ("ALBANO SANT'ALESSANDRO","A129");
 INSERT INTO codCatastali(City,Code) VALUES ("ALBANO VERCELLESE","A130");
-INSERT INTO codCatastali(City,Code) VALUES ("ALBAREDO ARNABOLDI","A134");
 INSERT INTO codCatastali(City,Code) VALUES ("ALBAREDO D'ADIGE","A137");
 INSERT INTO codCatastali(City,Code) VALUES ("ALBAREDO PER SAN MARCO","A135");
 INSERT INTO codCatastali(City,Code) VALUES ("ALBARETO","A138");
@@ -1202,7 +1201,7 @@ INSERT INTO codCatastali(City,Code) VALUES ("CAMPOROTONDO ETNEO","B561");
 INSERT INTO codCatastali(City,Code) VALUES ("CAMPOSAMPIERO","B563");
 INSERT INTO codCatastali(City,Code) VALUES ("CAMPOSANO","B565");
 INSERT INTO codCatastali(City,Code) VALUES ("CAMPOSANTO","B566");
-INSERT INTO codCatastali(City,Code) VALUES ("CAMPOSPINOSO","B567");
+INSERT INTO codCatastali(City,Code) VALUES ("CAMPOSPINOSO ALBAREDO","B567");
 INSERT INTO codCatastali(City,Code) VALUES ("CAMPOTOSTO","B569");
 INSERT INTO codCatastali(City,Code) VALUES ("CAMUGNANO","B572");
 INSERT INTO codCatastali(City,Code) VALUES ("CANAL SAN BOVO","B577");
@@ -3299,7 +3298,6 @@ INSERT INTO codCatastali(City,Code) VALUES ("INVERSO PINASCA","E311");
 INSERT INTO codCatastali(City,Code) VALUES ("INVERUNO","E313");
 INSERT INTO codCatastali(City,Code) VALUES ("INVORIO","E314");
 INSERT INTO codCatastali(City,Code) VALUES ("INZAGO","E317");
-INSERT INTO codCatastali(City,Code) VALUES ("IONADI","E321");
 INSERT INTO codCatastali(City,Code) VALUES ("IRGOLI","E323");
 INSERT INTO codCatastali(City,Code) VALUES ("IRMA","E325");
 INSERT INTO codCatastali(City,Code) VALUES ("IRSINA","E326");
@@ -3353,6 +3351,7 @@ INSERT INTO codCatastali(City,Code) VALUES ("JERZU","E387");
 INSERT INTO codCatastali(City,Code) VALUES ("JESI","E388");
 INSERT INTO codCatastali(City,Code) VALUES ("JESOLO","C388");
 INSERT INTO codCatastali(City,Code) VALUES ("JOLANDA DI SAVOIA","E320");
+INSERT INTO codCatastali(City,Code) VALUES ("JONADI","E321");
 INSERT INTO codCatastali(City,Code) VALUES ("JOPPOLO","E389");
 INSERT INTO codCatastali(City,Code) VALUES ("JOPPOLO GIANCAXIO","E390");
 INSERT INTO codCatastali(City,Code) VALUES ("JOVENCAN","E391");
@@ -4288,7 +4287,7 @@ INSERT INTO codCatastali(City,Code) VALUES ("MONTELUPO ALBESE","F550");
 INSERT INTO codCatastali(City,Code) VALUES ("MONTELUPO FIORENTINO","F551");
 INSERT INTO codCatastali(City,Code) VALUES ("MONTELUPONE","F552");
 INSERT INTO codCatastali(City,Code) VALUES ("MONTEMAGGIORE BELSITO","F553");
-INSERT INTO codCatastali(City,Code) VALUES ("MONTEMAGNO","F556");
+INSERT INTO codCatastali(City,Code) VALUES ("MONTEMAGNO MONFERRATO","F556");
 INSERT INTO codCatastali(City,Code) VALUES ("MONTEMALE DI CUNEO","F558");
 INSERT INTO codCatastali(City,Code) VALUES ("MONTEMARANO","F559");
 INSERT INTO codCatastali(City,Code) VALUES ("MONTEMARCIANO","F560");
@@ -5314,7 +5313,7 @@ INSERT INTO codCatastali(City,Code) VALUES ("PONZANO MONFERRATO","G872");
 INSERT INTO codCatastali(City,Code) VALUES ("PONZANO ROMANO","G874");
 INSERT INTO codCatastali(City,Code) VALUES ("PONZANO VENETO","G875");
 INSERT INTO codCatastali(City,Code) VALUES ("PONZONE","G877");
-INSERT INTO codCatastali(City,Code) VALUES ("POPOLI","G878");
+INSERT INTO codCatastali(City,Code) VALUES ("POPOLI TERME","G878");
 INSERT INTO codCatastali(City,Code) VALUES ("POPPI","G879");
 INSERT INTO codCatastali(City,Code) VALUES ("PORANO","G881");
 INSERT INTO codCatastali(City,Code) VALUES ("PORCARI","G882");
